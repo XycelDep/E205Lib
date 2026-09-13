@@ -8,6 +8,7 @@ class E205_Town
 	float m_ActivationRadius;
 	E205_TownState m_State;
 	bool m_Enabled;
+	string m_Fortification;
 
     void E205_Town()
     {

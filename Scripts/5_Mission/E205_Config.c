@@ -29,30 +29,81 @@ class E205_Config
 
         for (int i = 0; i < towns.Count(); i++)
         {
+            string id;
+            string name;
+            string type;
+            vector position;
+            float activationRadius;
+            bool enabled = true;
+            string fortification;
+
+            bool hasName = false;
+            bool hasType = false;
+            bool hasPosition = false;
+            bool hasActivationRadius = false;
+            bool hasEnabled = false;
+            bool hasFortification = false;
+
             array<CF_XML_Tag> idTags;
             idTags = towns[i].GetTag("ID");
             
             if (idTags.Count() > 0)
             {
-                string id;
                 id = idTags[0].GetContent().GetContent();
+            }
 
-                array<CF_XML_Tag> enabledTags;
-                enabledTags = towns[i].GetTag("Enabled");
+            hasName = towns[i].GetTag("Name").Count() > 0;
+            if(hasName)
+                name = towns[i].GetTag("Name")[0].GetContent().GetContent();
 
-                if (enabledTags.Count() > 0)
+            hasType = towns[i].GetTag("Type").Count() > 0;
+            if(hasType)
+                type = towns[i].GetTag("Type")[0].GetContent().GetContent();
+
+            hasPosition = towns[i].GetTag("Position").Count() > 0;
+            if(hasPosition)
+            {
+                string tPosition;
+                tPosition = towns[i].GetTag("Position")[0].GetContent().GetContent();
+                // Convert to Vector
+                TStringArray pParts;
+                pParts = new TStringArray;
+                tPosition.Split(" ", pParts);
+                if(pParts.Count() == 3)
                 {
-                    string enabledValue;
-                    enabledValue = enabledTags[0].GetContent().GetContent();
-
-                    bool enabled = true;
-
-                    if (enabledValue == "false")
-                        enabled = false;
-
-                    ApplyTownOverride(id, enabled);
+                    position[0] = pParts[0].ToFloat();
+                    position[1] = pParts[1].ToFloat();
+                    position[2] = pParts[2].ToFloat();
                 }
             }
+
+            hasActivationRadius = towns[i].GetTag("ActivationRadius").Count() > 0;
+            if(hasActivationRadius)
+            {   
+                string tActivationRadius;
+                tActivationRadius = towns[i].GetTag("ActivationRadius")[0].GetContent().GetContent();
+                activationRadius = tActivationRadius.ToFloat(); // Convert to Float
+            }
+
+            hasEnabled = towns[i].GetTag("Enabled").Count() > 0;
+            if(hasEnabled)
+            {
+                string tEnabled;
+                tEnabled = towns[i].GetTag("Enabled")[0].GetContent().GetContent();
+                if(tEnabled == "true")
+                    enabled = true;
+                else if(tEnabled == "false")
+                    enabled = false;
+            }
+                
+
+
+            hasFortification = towns[i].GetTag("Fortification").Count() > 0;
+            if(hasFortification)
+                fortification = towns[i].GetTag("Fortification")[0].GetContent().GetContent();
+            
+            ApplyTownOverride(id,name,type,position,activationRadius,enabled,fortification,hasName,hasType,hasPosition,hasActivationRadius,hasEnabled,hasFortification);
+            
         }
 
         Print("[E205][CONFIG] ========================================");
@@ -60,33 +111,80 @@ class E205_Config
         return true;
     }
 
-    static void ApplyTownOverride(string id, string name, array position, int activationRadius, bool enabled)
+    static void ApplyTownOverride(
+        string id,
+        string name,
+        string type,
+        vector position,
+        float activationRadius,
+        bool enabled,
+        string fortification,
+        bool hasName,
+        bool hasType,
+        bool hasPosition,
+        bool hasActivationRadius,
+        bool hasEnabled,
+        bool hasFortification
+    )
     {
-        array<ref E205_Town> towns;
-        towns = E205_TownManager.GetTowns();
+        E205_Town town;
+        town = E205_TownManager.GetTownByID(id);
 
-        Print("[E205][CONFIG] ----------------------------------------");
-        Print("[E205][CONFIG] Applying Town Override");
-        Print("[E205][CONFIG] Override ID: [" + id + "]");
-        Print("[E205][CONFIG] Override Enabled: " + enabled);
-        Print("[E205][CONFIG] Registered Towns: " + towns.Count());
-
-        for (int i = 0; i < towns.Count(); i++)
+        if (town)
         {
-            E205_Town town;
-            town = towns[i];
 
-            Print("[E205][CONFIG] Checking Town: [" + town.m_ID + "]");
+            if(hasName)
+                town.m_Name = name;
+                
+            if(hasType)
+                town.m_Type = type;
 
-            if (town.m_ID == id)
-            {
-                Print("[E205][CONFIG] Applied override to: " + town.m_ID);
-                Print("[E205][CONFIG] Enabled: " + town.m_Enabled);
+            if(hasPosition)
+                town.m_Position = position;
 
-                return;
-            } 
+            if(hasActivationRadius)
+                town.m_ActivationRadius = activationRadius;
+
+            if(hasEnabled)
+                town.m_Enabled = enabled;
+
+            if(hasFortification)
+                town.m_Fortification = fortification;
+
+            Print("[E205][CONFIG] Applied config override to: " + town.m_ID);
+
+            return;
+        }
+        
+        if(!hasPosition)
+        {
+            Print("[E205][CONFIG] WARNING: Custom Town has no position defined!");
+            return;
         }
 
-        Print("[E205][CONFIG] WARNING: No matching town found for ID: [" + id + "]");
+        E205_Town customTown;
+        customTown = new E205_Town;
+
+        customTown.m_ID = id;
+        customTown.m_Position = position;
+
+        if (hasName)
+            customTown.m_Name = name;
+
+        if (hasType)
+            customTown.m_Type = type;
+
+        if (hasActivationRadius)
+            customTown.m_ActivationRadius = activationRadius;
+
+        if (hasEnabled)
+            customTown.m_Enabled = enabled;
+
+        if (hasFortification)
+            customTown.m_Fortification = fortification;
+
+        E205_TownManager.AddTown(customTown);
+
+        Print("[E205][CONFIG] Created custom town: " + id);
     }
 };

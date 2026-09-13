@@ -63,6 +63,7 @@ class E205_TownManager
 			
 			town.m_State = E205_TownState.UNTOUCHED;
 			town.m_Enabled = true;
+			town.m_Fortification = "";
 			
 			m_Towns.Insert(town);
 
@@ -99,5 +100,32 @@ class E205_TownManager
 			}
 		}
 		return nearestTown;
+	}
+
+	static E205_Town GetTownByID(string id)
+	{
+		if (!m_Towns)
+			return null;
+		
+		for (int i = 0; i < m_Towns.Count(); i++)
+		{
+			E205_Town town;
+			town = m_Towns[i];
+			if(town)
+			{
+				if(town.m_ID == id)
+					return town;
+			}
+		}
+		return null;
+	}
+
+	static void AddTown(E205_Town town)
+	{
+		if(!town)
+			return;
+
+		m_Towns.Insert(town);
+		Print("[E205][TOWN] Added Custom Town: " + town.m_ID);
 	}
 };
