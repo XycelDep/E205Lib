@@ -156,6 +156,13 @@ class E205_Config
             return;
         }
         
+        if (id == "")
+        {
+            Print("[E205][CONFIG] WARNING : Town has no ID");
+            return;
+        }
+
+
         if(!hasPosition)
         {
             Print("[E205][CONFIG] WARNING: Custom Town has no position defined!");
