@@ -1,0 +1,7 @@
+enum E205_TownState
+{
+    UNTOUCHED,
+    LIBERATING,
+    LIBERATED,
+    FORTIFIED
+};
