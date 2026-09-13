@@ -45,12 +45,15 @@ class E205_TownManager
 
 			E205_Town town;
 			town = new E205_Town;
-
+			
+			
 			town.m_Name = name;
 			town.m_Type = type;
 			town.m_ConfigEntry = className;
 			town.m_Position = position;
-			
+			town.m_ID = town.m_ConfigEntry;
+
+
 			if (type == "Village")
 				town.m_ActivationRadius = 150;
 			else if (type == "City")
@@ -59,6 +62,7 @@ class E205_TownManager
 				town.m_ActivationRadius = 500;
 			
 			town.m_State = E205_TownState.UNTOUCHED;
+			town.m_Enabled = true;
 			
 			m_Towns.Insert(town);
 

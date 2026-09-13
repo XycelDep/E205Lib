@@ -1,11 +1,13 @@
 class E205_Town
 {
+	string m_ID;
     string m_Name;
     string m_Type;
     string m_ConfigEntry;
     vector m_Position;
 	float m_ActivationRadius;
 	E205_TownState m_State;
+	bool m_Enabled;
 
     void E205_Town()
     {
