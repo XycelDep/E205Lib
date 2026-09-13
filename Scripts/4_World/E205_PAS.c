@@ -9,7 +9,7 @@ modded class Land_Radio_PanelPAS
 
 		if (nearestTown)
 		{	
-			nearestTown.setState(E205_TownState.LIBERATING)
+			nearestTown.setState(E205_TownState.LIBERATING);
 		}
 		else
 		{

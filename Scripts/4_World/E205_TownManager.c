@@ -89,13 +89,14 @@ class E205_TownManager
 		{
 			float distance = vector.Distance(position, town.m_Position);
 			
-			if (distance <= town.m_ActivationRadius);
-
+			if (distance <= town.m_ActivationRadius)
+			{
 				if (nearestDistance < 0 || distance < nearestDistance)
 				{
 					nearestDistance = distance;
 					nearestTown = town;
 				}
+			}
 		}
 		return nearestTown;
 	}

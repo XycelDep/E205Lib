@@ -27,60 +27,12 @@ class E205_Config
 
         Print("[E205][CONFIG] Towns found: " + towns.Count());
 
-        // for (int i = 0; i < towns.Count(); i++)
-        // {
-        //     Print("[E205][CONFIG] ----------------------------------------");
-        //     Print("[E205][CONFIG] Town " + i);
-
-        //     array<CF_XML_Tag> idTags;
-        //     idTags = towns[i].GetTag("ID");
-
-        //     if (idTags.Count() > 0)
-        //         Print("[E205][CONFIG] ID: " + idTags[0].GetContent().GetContent());
-
-        //     array<CF_XML_Tag> nameTags;
-        //     nameTags = towns[i].GetTag("Name");
-
-        //     if (nameTags.Count() > 0)
-        //         Print("[E205][CONFIG] Name: " + nameTags[0].GetContent().GetContent());
-
-        //     array<CF_XML_Tag> typeTags;
-        //     typeTags = towns[i].GetTag("Type");
-
-        //     if (typeTags.Count() > 0)
-        //         Print("[E205][CONFIG] Type: " + typeTags[0].GetContent().GetContent());
-
-        //     array<CF_XML_Tag> positionTags;
-        //     positionTags = towns[i].GetTag("Position");
-
-        //     if (positionTags.Count() > 0)
-        //         Print("[E205][CONFIG] Position: " + positionTags[0].GetContent().GetContent());
-
-        //     array<CF_XML_Tag> radiusTags;
-        //     radiusTags = towns[i].GetTag("ActivationRadius");
-
-        //     if (radiusTags.Count() > 0)
-        //         Print("[E205][CONFIG] ActivationRadius: " + radiusTags[0].GetContent().GetContent());
-
-        //     array<CF_XML_Tag> enabledTags;
-        //     enabledTags = towns[i].GetTag("Enabled");
-
-        //     if (enabledTags.Count() > 0)
-        //         Print("[E205][CONFIG] Enabled: " + enabledTags[0].GetContent().GetContent());
-
-        //     array<CF_XML_Tag> fortificationTags;
-        //     fortificationTags = towns[i].GetTag("Fortification");
-
-        //     if (fortificationTags.Count() > 0)
-        //         Print("[E205][CONFIG] Fortification: " + fortificationTags[0].GetContent().GetContent());
-        // }
-
         for (int i = 0; i < towns.Count(); i++)
         {
             array<CF_XML_Tag> idTags;
             idTags = towns[i].GetTag("ID");
-
-            if (idTags.Count() == 0)
+            
+            if (idTags.Count() > 0)
             {
                 string id;
                 id = idTags[0].GetContent().GetContent();
@@ -108,15 +60,23 @@ class E205_Config
         return true;
     }
 
-    static void ApplyTownOverride(string id, bool enabled)
+    static void ApplyTownOverride(string id, string name, array position, int activationRadius, bool enabled)
     {
         array<ref E205_Town> towns;
         towns = E205_TownManager.GetTowns();
+
+        Print("[E205][CONFIG] ----------------------------------------");
+        Print("[E205][CONFIG] Applying Town Override");
+        Print("[E205][CONFIG] Override ID: [" + id + "]");
+        Print("[E205][CONFIG] Override Enabled: " + enabled);
+        Print("[E205][CONFIG] Registered Towns: " + towns.Count());
 
         for (int i = 0; i < towns.Count(); i++)
         {
             E205_Town town;
             town = towns[i];
+
+            Print("[E205][CONFIG] Checking Town: [" + town.m_ID + "]");
 
             if (town.m_ID == id)
             {
@@ -126,5 +86,7 @@ class E205_Config
                 return;
             } 
         }
+
+        Print("[E205][CONFIG] WARNING: No matching town found for ID: [" + id + "]");
     }
 };
