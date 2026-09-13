@@ -8,7 +8,7 @@ class CfgPatches
         requiredAddons[] = {"DZ_Scripts"};
     };
 };
-// Quick Change to push
+
 class CfgMods
 {
     class E205Lib
