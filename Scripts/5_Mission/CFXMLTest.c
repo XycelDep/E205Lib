@@ -2,43 +2,40 @@ class CFXMLTest
 {
     static void Test()
     {
-        Print("[E205][CFXML] ========================================");
-        Print("[E205][CFXML] CF XML Test Starting");
+        Print("[E205][XML] ========================================");
+        Print("[E205][XML] Testing CF XML");
 
-        CF_XML xml = new CF_XML();
+        CF_XML_Document document;
 
-        Print("[E205][CFXML] CF_XML object created");
-
-        if (!xml.LoadFile("E205Lib/Config/Settings.xml"))
+        if (!CF_XML.ReadDocument("E205Lib/Config/Settings.xml", document))
         {
-            Print("[E205][CFXML] ERROR: Failed to load Settings.xml");
+            Print("[E205][XML] ERROR: Failed to read document");
             return;
         }
 
-        Print("[E205][CFXML] Settings.xml loaded successfully");
+        Print("[E205][XML] Document loaded successfully");
 
-        CF_XMLNode root = xml.GetRoot();
+        array<CF_XML_Tag> settings;
+        settings = document.Get("E205_Settings");
 
-        if (!root)
+        Print("[E205][XML] Settings tags found: " + settings.Count());
+
+        if (settings.Count() > 0)
         {
-            Print("[E205][CFXML] ERROR: XML root is null");
-            return;
+            array<CF_XML_Tag> messages;
+            messages = settings[0].GetTag("TestMessage");
+
+            Print("[E205][XML] TestMessage tags found: " + messages.Count());
+
+            if (messages.Count() > 0)
+            {
+                string message;
+                message = messages[0].GetContent().GetContent();
+
+                Print("[E205][XML] Message: " + message);
+            }
         }
 
-        Print("[E205][CFXML] Root node obtained");
-
-        CF_XMLNode messageNode = root.Find("TestMessage");
-
-        if (!messageNode)
-        {
-            Print("[E205][CFXML] ERROR: TestMessage node not found");
-            return;
-        }
-
-        Print("[E205][CFXML] TestMessage: " + messageNode.GetValue());
-
-        Print("[E205][CFXML] ========================================");
-        Print("[E205][CFXML] CF XML Test Complete");
-        Print("[E205][CFXML] ========================================");
+        Print("[E205][XML] ========================================");
     }
 };
