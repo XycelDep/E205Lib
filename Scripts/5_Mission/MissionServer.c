@@ -5,6 +5,6 @@ modded class MissionServer
 		super.OnInit();
 
 		E205_TownManager.Initialize();
-		CFXMLTest.Test();
+		E205_Config.Load();
 	}
 }
