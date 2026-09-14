@@ -14,7 +14,7 @@ class E205_LiberationManager
             return false;
         }
 
-        E205_WaveManager.StartWave(town, 100, 300);
+        E205_WaveManager.StartWave(town, 100, 30, 5);
         Print("[E205][LM] Transitioning Town state");
         return true;
     }
