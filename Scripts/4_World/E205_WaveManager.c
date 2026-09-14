@@ -30,7 +30,7 @@ class E205_WaveManager
 
         if(spawnDelay < 0)
         {
-            Print("[E205][WM] ERROR : Invalid Spawn Delay")
+            Print("[E205][WM] ERROR : Invalid Spawn Delay");
             return;
         }
 
@@ -43,22 +43,20 @@ class E205_WaveManager
         m_WaveSpawnDelay = spawnDelay;
 
         SpawnWaveBatch();
-
-
     }
 
     static void SpawnWaveBatch()
     {
         if(!m_WaveTown)
         {
-            Print("[E205][WM] ERROR : Null Town!")
+            Print("[E205][WM] ERROR : Null Town!");
             return;
         }
 
         int remaining;
         remaining = m_WaveAmount - m_WaveSpawned;
 
-        if(remaining <= 0);
+        if(remaining <= 0)
         {
             Print("[E205][WM] Wave Spawn Complete");
             return;
@@ -74,8 +72,14 @@ class E205_WaveManager
 
         for (int i = 0; i < currentBatch; i++)
         {
-            SpawnInfected(m_WaveTown, m_WaveRadius);
-            m_WaveSpawned++;
+            if(SpawnInfected(m_WaveTown, m_WaveRadius))
+            {
+                m_WaveSpawned++;
+            }
+            else
+            {
+                Print("[E205][WM] ERROR : Failed to spawn infected");
+            }
         }
 
         Print("[E205][WM] Spawned: " + m_WaveSpawned + "/" + m_WaveAmount);
@@ -83,11 +87,7 @@ class E205_WaveManager
 
         if (remaining > 0)
         {
-            GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY).CallLater(
-                SpawnWaveBatch,
-                m_WaveSpawnDelay,
-                false
-            );
+            GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY).CallLater(SpawnWaveBatch, m_WaveSpawnDelay, false);
         }
         else
         {
@@ -96,7 +96,7 @@ class E205_WaveManager
 
     }
 
-    protected static void SpawnInfected(E205_Town town, float radius)
+    protected static bool SpawnInfected(E205_Town town, float radius)
     {
         vector spawnPosition;
         spawnPosition = town.m_Position;
@@ -112,12 +112,10 @@ class E205_WaveManager
         if(infected)
         {
             m_ActiveEnemies.Insert(infected);
-        }
-        else
-        {
-            Print("[E205][WM] ERROR Failed to spawn infected!");
+            return true;
         }
 
+        return false;
     }
 }
 
