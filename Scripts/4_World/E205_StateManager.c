@@ -12,7 +12,7 @@ class E205_StateManager
         oldState = town.m_State;
 
         town.m_State = newState;
-        return true
+        return true;
 
     }
-}
+};
